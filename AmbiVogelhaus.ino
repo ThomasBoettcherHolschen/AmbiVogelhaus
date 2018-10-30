@@ -21,6 +21,7 @@ Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 int dataPin = 12;
 int clockPin = 13;
 char lastKey;
+char nextKey;
 
 Adafruit_WS2801 strip = Adafruit_WS2801(50, dataPin, clockPin);
 
@@ -28,7 +29,8 @@ void setup() {
   Serial.begin(9600);
   strip.begin();
   strip.show();
-  colorSwitch(Color(255, 255, 255));  // white fill
+  nextKey = '0';
+  //colorSwitch(Color(255, 255, 0));  // white fill
 }
 
 void loop() {
@@ -40,44 +42,47 @@ void checkKey(){
   char key = keypad.getKey();
   if (key != NO_KEY){
     lastKey = key;
-    PerformAction(key);
+    nextKey = key;
   }
+  PerformAction(nextKey);
 }
 
 void PerformAction(char key){
   switch (key) {
     case '1':
-      colorWipe(Color(255, 0, 0), 50);  // red fill
+      colorWipe(Color(255, 0, 0), 50);  // red
       break;
     case '2':
-      colorWipe(Color(0, 255, 0), 50);  // green fill
+      colorWipe(Color(0, 255, 0), 50);  // green
       break;
     case '3':
-      colorWipe(Color(0, 0, 255), 50);  // blue fill
+      colorWipe(Color(0, 0, 255), 50);  // blue 
       break;        
     case '4':
-      colorSwitch(Color(255, 0, 0));  // fast Red
+      colorSwitch(Color(255, 0, 0));  // red
       break;
     case '5':
-      colorSwitch(Color(0, 255, 0));  // fast Green
+      colorSwitch(Color(0, 255, 0));  // green
       break;
     case '6':
-      colorSwitch(Color(0, 0, 255));  // Fast Blue
+      colorSwitch(Color(0, 0, 255));  // blue
       break;
     case '7':
-      colorRun(Color(255, 0, 0), 50);  // blue fill
+      colorRun(Color(255, 0, 0), 50);  // red 
       break;                
     case '8':
-      colorRun(Color(0, 255, 0), 50);  // blue fill
+      colorRun(Color(0, 255, 0), 50);  // green
       break;        
     case '9':
-      colorRun(Color(0, 0, 255), 50);  // blue fill
+      colorRun(Color(0, 0, 255), 50);  // blue 
       break;        
     case '0':
-      colorSwitch(Color(255, 255, 255));  // white fill
+      colorSwitch(Color(255, 255, 100));  // white
       break;        
     case '#':
-      rainbow(20);
+      colorRun(Color(255, 0, 0), 50);  // red 
+      colorRun(Color(0, 255, 0), 50);  // green
+      colorRun(Color(0, 0, 255), 50);  // blue 
       break;        
     case '*':
       rainbowCycle(20);
@@ -90,24 +95,26 @@ void PerformAction(char key){
 
 void rainbow(uint8_t wait) {
   int i, j;
-   
+  char key; 
   for (j=0; j < 256; j++) {     // 3 cycles of all 256 colors in the wheel
     for (i=0; i < strip.numPixels(); i++) {
       strip.setPixelColor(i, Wheel( (i + j) % 255));
     }  
     strip.show();   // write all the pixels out
-    delay(wait);
-    char key = keypad.getKey();
-    if (key != NO_KEY){
+    key = keypad.getKey();
+    if(key != NO_KEY){
       if(key != lastKey){
+        nextKey = key;
         break;
       }
     }
+    delay(wait);
   }
 }
 
 void rainbowCycle(uint8_t wait) {
   int i, j;
+  char key; 
   
   for (j=0; j < 256 * 5; j++) {     // 5 cycles of all 25 colors in the wheel
     for (i=0; i < strip.numPixels(); i++) {
@@ -118,18 +125,20 @@ void rainbowCycle(uint8_t wait) {
       strip.setPixelColor(i, Wheel( ((i * 256 / strip.numPixels()) + j) % 256) );
     }  
     strip.show();   // write all the pixels out
-    delay(wait);
-    char key = keypad.getKey();
-    if (key != NO_KEY){
+    key = keypad.getKey();
+    if(key != NO_KEY){
       if(key != lastKey){
+        nextKey = key;
         break;
       }
     }    
+    delay(wait);   
   }
 }
 
 void colorSwitch(uint32_t c) {
   int i;
+  
  
   for (i=0; i < strip.numPixels(); i++) {
       strip.setPixelColor(i, c);
@@ -140,16 +149,25 @@ void colorSwitch(uint32_t c) {
 
 void colorWipe(uint32_t c, uint8_t wait) {
   int i;
+  char key; 
  
   for (i=0; i < strip.numPixels(); i++) {
       strip.setPixelColor(i, c);
       strip.show();
+      key = keypad.getKey();
+      if(key != NO_KEY){
+        if(key != lastKey){
+          nextKey = key;
+          break;
+        }
+      }      
       delay(wait);
   }
 }
 
 void colorRun(uint32_t c, uint8_t wait) {
   int i;
+  char key; 
  
   for (i=0; i < strip.numPixels(); i++) {
       strip.setPixelColor(i, c);
@@ -158,6 +176,13 @@ void colorRun(uint32_t c, uint8_t wait) {
         strip.setPixelColor(i-1, 0);  
       }
       strip.show();
+      key = keypad.getKey();
+      if(key != NO_KEY){
+        if(key != lastKey){
+          nextKey = key;
+          break;
+        }
+      }      
       delay(wait);
   }
   colorSwitch(0);
