@@ -59,13 +59,13 @@ void PerformAction(char key){
       colorWipe(Color(0, 0, 255), 50);  // blue 
       break;        
     case '4':
-      colorSwitch(Color(255, 0, 0));  // red
+      colorBlink(Color(255, 0, 0), 200);  // red
       break;
     case '5':
-      colorSwitch(Color(0, 255, 0));  // green
+      colorBlink(Color(0, 255, 0), 200);  // green
       break;
     case '6':
-      colorSwitch(Color(0, 0, 255));  // blue
+      colorBlink(Color(0, 0, 255), 200);  // blue
       break;
     case '7':
       colorRun(Color(255, 0, 0), 50);  // red 
@@ -80,9 +80,10 @@ void PerformAction(char key){
       colorSwitch(Color(255, 255, 100));  // white
       break;        
     case '#':
-      colorRun(Color(255, 0, 0), 50);  // red 
-      colorRun(Color(0, 255, 0), 50);  // green
-      colorRun(Color(0, 0, 255), 50);  // blue 
+      rainbow(20);
+      //colorRun(Color(255, 0, 0), 50);  // red 
+      //colorRun(Color(0, 255, 0), 50);  // green
+      //colorRun(Color(0, 0, 255), 50);  // blue 
       break;        
     case '*':
       rainbowCycle(20);
@@ -173,7 +174,7 @@ void colorRun(uint32_t c, uint8_t wait) {
       strip.setPixelColor(i, c);
       if(i != 0)
       {
-        strip.setPixelColor(i-1, 0);  
+        strip.setPixelColor(i-5, 0);  
       }
       strip.show();
       key = keypad.getKey();
@@ -185,6 +186,12 @@ void colorRun(uint32_t c, uint8_t wait) {
       }      
       delay(wait);
   }
+  colorSwitch(0);
+}
+
+void colorBlink(uint32_t c, uint8_t wait) {
+  colorSwitch(c);
+  delay(wait);
   colorSwitch(0);
 }
 
