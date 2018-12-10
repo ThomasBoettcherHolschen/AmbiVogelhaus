@@ -8,3 +8,9 @@ Just a little Arduino-Programm to build the LED-Interior of a Birdshouse used as
 ![Left](pics/Left.jpg)
 ## Right Side Connection
 ![Right](pics/Right.jpg)
+## With Keypad - Uninstalled
+![KeyPad](pics/Keypad.jpg)
+## Final Installation
+![PicColor1](pics/Color1.jpg.jpg)
+![PicColor2](pics/Color2.jpg.jpg)
+![PicColor3](pics/Color3.jpg.jpg)
